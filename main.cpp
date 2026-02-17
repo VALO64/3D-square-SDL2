@@ -22,8 +22,20 @@ void layer1(SDL_Renderer *render,float x_normal, float y_normal, float z_normal)
   /* Z axis added formula */ 
   rectangle_test.x = rectangle_test.x/z_normal;
   rectangle_test.y = rectangle_test.y/z_normal;
-  SDL_RenderFillRect(render, &rectangle_test);
-  std::cout << "x initial cordenate: " << rectangle_test.x << std::endl;
+  
+  //SDL_SetRenderDrawColor(render, GRAY);
+  //SDL_RenderClear(render);
+  for(int i = 0;  rectangle_test.x>390; i++){
+    rectangle_test.x = rectangle_test.x - i;
+    SDL_SetRenderDrawColor(render, GRAY);
+    SDL_RenderClear(render);
+    SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
+    SDL_RenderFillRect(render, &rectangle_test);
+    SDL_RenderPresent(render);
+    std::cout << "x cordenate: " << rectangle_test.x << std::endl;
+    SDL_Delay(1000/60);
+  }
+  std::cout << "x initial cordenate: " << rectangle_test.x << std::endl; 
   std::cout << "y initial cordenate: " << rectangle_test.y << std::endl;
   std::cout << "variable x: " << x_normal << std::endl;
   std::cout << "variable y: " << y_normal << std::endl;
@@ -45,8 +57,8 @@ int main(){
         return -1;
     }
   float flip = -1; // Fliper to flip the y cordentates that posetive values goes up and negative goes down 
-  SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
-  layer1(render, 0.5 , flip * 0, 1);
+  
+  //layer1(render, 0.5 , flip * 0, 1);
   
   
   bool quit = false;
@@ -90,8 +102,8 @@ int main(){
       /* Square color */
       //SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
       //SDL_RenderFillRect(render, &rectangle_test);
-           
-      SDL_RenderPresent(render);
+      layer1(render, 0.5 , flip * 0.5, 1);
+      
   }
   SDL_DestroyRenderer(render);
   SDL_DestroyWindow(mainwin);
