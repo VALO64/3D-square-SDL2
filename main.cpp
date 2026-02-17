@@ -10,33 +10,54 @@
 #define WIDTH 800
 #define HEIGHT 800
 #define GRAY 92, 94, 93, 255
+#define FPS 25
 
-void layer1(SDL_Renderer *render,float x_normal, float y_normal, float z_normal){
+void square(SDL_Renderer *render,float x_normal, float y_normal, float x2_normal, float y2_normal, float z_normal){
   float offset = 10; //Offset to senter the square in the middle the square is 20x20 pixels
-  SDL_Rect rectangle_test;
+  SDL_Rect point1_sq;
   /* Normalization x and y cordenates to just set -1 to 1 and x and y */
-  rectangle_test.x = ((x_normal + 1)*WIDTH/2) - offset;
-  rectangle_test.y = ((y_normal + 1)*HEIGHT/2) - offset;
-  rectangle_test.w = 20;
-  rectangle_test.h = 20;
+  point1_sq.x = ((x_normal + 1)*WIDTH/2) - offset;
+  point1_sq.y = ((y_normal + 1)*HEIGHT/2) - offset;
+  point1_sq.w = 20;
+  point1_sq.h = 20;
   /* Z axis added formula */ 
-  rectangle_test.x = rectangle_test.x/z_normal;
-  rectangle_test.y = rectangle_test.y/z_normal;
+  point1_sq.x = point1_sq.x/z_normal;
+  point1_sq.y = point1_sq.y/z_normal;
+
+  SDL_Rect point2_sq;
+  /* Normalization x and y cordenates to just set -1 to 1 and x and y */
+  point2_sq.x = ((x2_normal + 1)*WIDTH/2) - offset;
+  point2_sq.y = ((y2_normal + 1)*HEIGHT/2) - offset;
+  point2_sq.w = 20;
+  point2_sq.h = 20;
+  /* Z axis added formula */ 
+  point2_sq.x = point2_sq.x/z_normal;
+  point2_sq.y = point2_sq.y/z_normal;
+  //SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
   
-  //SDL_SetRenderDrawColor(render, GRAY);
-  //SDL_RenderClear(render);
-  for(int i = 0;  rectangle_test.x>390; i++){
-    rectangle_test.x = rectangle_test.x - i;
+
+  /* Point movement animation */
+  for(int i = 0;  point1_sq.x>390 && point1_sq.y<390 && point2_sq.x < 390 && point2_sq.y < 390; i++){
+    /* Point 1 movement */
+    point1_sq.x = point1_sq.x - i;
+    point1_sq.y = point1_sq.y + i;
+    /* Point 2 movement */
+    point2_sq.x = point2_sq.x + i;
+    point2_sq.y = point2_sq.y + i;
     SDL_SetRenderDrawColor(render, GRAY);
     SDL_RenderClear(render);
     SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
-    SDL_RenderFillRect(render, &rectangle_test);
+    SDL_RenderFillRect(render, &point1_sq);
+    SDL_RenderFillRect(render, &point2_sq);
     SDL_RenderPresent(render);
-    std::cout << "x cordenate: " << rectangle_test.x << std::endl;
-    SDL_Delay(1000/60);
+    std::cout << "x cordenate: " << point1_sq.x << std::endl;
+    std::cout << "y cordenate: " << point1_sq.y << std::endl;
+    SDL_Delay(1000/FPS);
   }
-  std::cout << "x initial cordenate: " << rectangle_test.x << std::endl; 
-  std::cout << "y initial cordenate: " << rectangle_test.y << std::endl;
+  std::cout << "x initial cordenate point1: " << point1_sq.x << std::endl; 
+  std::cout << "y initial cordenate point1: " << point1_sq.y << std::endl;
+  std::cout << "x initial cordenate point2: " << point2_sq.x << std::endl;
+  std::cout << "y initial cordenate point2: " << point2_sq.y << std::endl;
   std::cout << "variable x: " << x_normal << std::endl;
   std::cout << "variable y: " << y_normal << std::endl;
   std::cout << "variable z: " << z_normal << std::endl;
@@ -102,7 +123,7 @@ int main(){
       /* Square color */
       //SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
       //SDL_RenderFillRect(render, &rectangle_test);
-      layer1(render, 0.5 , flip * 0.5, 1);
+      square(render, 0.5 , flip * 0.5, -0.5, flip * 0.5, 1);
       
   }
   SDL_DestroyRenderer(render);
