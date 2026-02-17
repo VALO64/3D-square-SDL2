@@ -11,7 +11,7 @@
 #define HEIGHT 800
 #define GRAY 92, 94, 93, 255
 
-void layer1(SDL_Renderer *render,float x_normal, float y_normal){
+void layer1(SDL_Renderer *render,float x_normal, float y_normal, float z_normal){
   float offset = 10; //Offset to senter the square in the middle the square is 20x20 pixels
   SDL_Rect rectangle_test;
   /* Normalization x and y cordenates to just set -1 to 1 and x and y */
@@ -19,11 +19,15 @@ void layer1(SDL_Renderer *render,float x_normal, float y_normal){
   rectangle_test.y = ((y_normal + 1)*HEIGHT/2) - offset;
   rectangle_test.w = 20;
   rectangle_test.h = 20;
+  /* Z axis added formula */ 
+  rectangle_test.x = rectangle_test.x/z_normal;
+  rectangle_test.y = rectangle_test.y/z_normal;
   SDL_RenderFillRect(render, &rectangle_test);
   std::cout << "x initial cordenate: " << rectangle_test.x << std::endl;
   std::cout << "y initial cordenate: " << rectangle_test.y << std::endl;
   std::cout << "variable x: " << x_normal << std::endl;
   std::cout << "variable y: " << y_normal << std::endl;
+  std::cout << "variable z: " << z_normal << std::endl;
 }
 
 
@@ -42,7 +46,7 @@ int main(){
     }
   float flip = -1; // Fliper to flip the y cordentates that posetive values goes up and negative goes down 
   SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
-  layer1(render, 0 , flip * 0);
+  layer1(render, 0.5 , flip * 0, 1);
   
   
   bool quit = false;
