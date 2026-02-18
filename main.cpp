@@ -12,7 +12,7 @@
 #define GRAY 92, 94, 93, 255
 #define FPS 25
 
-void square(SDL_Renderer *render,float x_normal, float y_normal, float x2_normal, float y2_normal, float z_normal){
+void square(SDL_Renderer *render,float x_normal, float y_normal, float x2_normal, float y2_normal, float x3_normal , float y3_normal, float x4_normal, float y4_normal, float z_normal){
   float offset = 10; //Offset to senter the square in the middle the square is 20x20 pixels
   SDL_Rect point1_sq;
   /* Normalization x and y cordenates to just set -1 to 1 and x and y */
@@ -34,21 +34,48 @@ void square(SDL_Renderer *render,float x_normal, float y_normal, float x2_normal
   point2_sq.x = point2_sq.x/z_normal;
   point2_sq.y = point2_sq.y/z_normal;
   //SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
-  
-
+  SDL_Rect point3_sq;
+  /* Normalization x and y cordenates to just set -1 to 1 and x and y */
+  point3_sq.x = ((x3_normal + 1)*WIDTH/2) - offset;
+  point3_sq.y = ((y3_normal + 1)*HEIGHT/2) - offset;
+  point3_sq.w = 20;
+  point3_sq.h = 20;
+  /* Z axis added formula */ 
+  point3_sq.x = point3_sq.x/z_normal;
+  point3_sq.y = point3_sq.y/z_normal;
+  //SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
+  SDL_Rect point4_sq;
+  /* Normalization x and y cordenates to just set -1 to 1 and x and y */
+  point4_sq.x = ((x4_normal + 1)*WIDTH/2) - offset;
+  point4_sq.y = ((y4_normal + 1)*HEIGHT/2) - offset;
+  point4_sq.w = 20;
+  point4_sq.h = 20;
+  /* Z axis added formula */ 
+  point4_sq.x = point4_sq.x/z_normal;
+  point4_sq.y = point4_sq.y/z_normal;
+  //SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
   /* Point movement animation */
-  for(int i = 0;  point1_sq.x>390 && point1_sq.y<390 && point2_sq.x < 390 && point2_sq.y < 390; i++){
+  for(int i = 0;  point1_sq.x>390 && point1_sq.y<390 && point2_sq.x < 390 && point2_sq.y < 390 && point3_sq.x>390 && point3_sq.y>390 && point4_sq.x<390 && point4_sq.y>390; i++){
     /* Point 1 movement */
     point1_sq.x = point1_sq.x - i;
     point1_sq.y = point1_sq.y + i;
     /* Point 2 movement */
     point2_sq.x = point2_sq.x + i;
     point2_sq.y = point2_sq.y + i;
+    /* Point 3 movement */
+    point3_sq.x = point3_sq.x - i;
+    point3_sq.y = point3_sq.y - i;
+    /* Point 4 movement */
+    point4_sq.x = point4_sq.x + i;
+    point4_sq.y = point4_sq.y - i;
     SDL_SetRenderDrawColor(render, GRAY);
     SDL_RenderClear(render);
-    SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
+    SDL_SetRenderDrawColor(render, 255, 255, 255, 255); // Points color
     SDL_RenderFillRect(render, &point1_sq);
     SDL_RenderFillRect(render, &point2_sq);
+    SDL_RenderFillRect(render, &point3_sq);
+    SDL_RenderFillRect(render, &point4_sq);
+
     SDL_RenderPresent(render);
     std::cout << "x cordenate: " << point1_sq.x << std::endl;
     std::cout << "y cordenate: " << point1_sq.y << std::endl;
@@ -58,6 +85,10 @@ void square(SDL_Renderer *render,float x_normal, float y_normal, float x2_normal
   std::cout << "y initial cordenate point1: " << point1_sq.y << std::endl;
   std::cout << "x initial cordenate point2: " << point2_sq.x << std::endl;
   std::cout << "y initial cordenate point2: " << point2_sq.y << std::endl;
+  std::cout << "x initial cordenate point3: " << point3_sq.x << std::endl;
+  std::cout << "y initial cordenate point3: " << point3_sq.y << std::endl;
+  std::cout << "x initial cordenate point4: " << point4_sq.x << std::endl;
+  std::cout << "y initial cordenate point4: " << point4_sq.y << std::endl;
   std::cout << "variable x: " << x_normal << std::endl;
   std::cout << "variable y: " << y_normal << std::endl;
   std::cout << "variable z: " << z_normal << std::endl;
@@ -77,13 +108,9 @@ int main(){
         SDL_Quit();
         return -1;
     }
-  float flip = -1; // Fliper to flip the y cordentates that posetive values goes up and negative goes down 
-  
-  //layer1(render, 0.5 , flip * 0, 1);
-  
+  float flip = -1; // Fliper to flip the y cordentates that posetive values goes up 
   
   bool quit = false;
-  bool dragging = false;
 
   while(!quit){
     SDL_Event event;
@@ -91,39 +118,8 @@ int main(){
         if(event.type == SDL_QUIT){
           quit = true;
         }
-        if(event.type == SDL_MOUSEBUTTONDOWN){
-
-          if(event.button.button == SDL_BUTTON_LEFT){
-
-            SDL_Point mouse_pos = {event.button.x, event.button.y};
-
-            //if(SDL_PointInRect(&mouse_pos, &rectangle_test)){
-              //dragging = true;
-            //}
-
-          }
-
-        }
-        if (event.type == SDL_MOUSEBUTTONUP){
-          if(event.button.button == SDL_BUTTON_LEFT){
-            dragging = false;
-          }
-        }
-        if(event.type == SDL_MOUSEMOTION){
-          if(dragging){
-            //rectangle_test.x = event.motion.x;
-            //rectangle_test.y = event.motion.y;
-            //std::cout << "Values: " << rectangle_test.x << std::endl;
-          }
-        }
       }
-      /* Background color */
-      //SDL_SetRenderDrawColor(render, GRAY);
-      //SDL_RenderClear(render);
-      /* Square color */
-      //SDL_SetRenderDrawColor(render, 255, 255, 255, 255);
-      //SDL_RenderFillRect(render, &rectangle_test);
-      square(render, 0.5 , flip * 0.5, -0.5, flip * 0.5, 1);
+      square(render, 0.5 , flip * 0.5, -0.5, flip * 0.5, 0.5, flip * -0.5, -0.5, flip * -0.5, 1);
       
   }
   SDL_DestroyRenderer(render);
