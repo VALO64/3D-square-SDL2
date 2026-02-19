@@ -1,9 +1,11 @@
+//g++ -o demo main.cpp $(sdl2-config --cflags --libs) -lSDL2_gfx
 /* Formula to tralate the 3d square: x = x/z
  *                                   y = y/z
  * Formula to rotate a vector: x' = xcos(angle) - ysin(angle)
  *                             y' = xsin(angle) + ycos(angle)
  */
 #include <SDL2/SDL_events.h>
+#include <SDL2/SDL2_gfxPrimitives.h> // Library to change the thiknes of the lines
 #include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
@@ -15,6 +17,9 @@
 #define WIDTH 800
 #define HEIGHT 800
 #define GRAY 92, 94, 93, 255
+#define WITHE 0xFFFFFFFF //ARGB
+#define GREEN 0xFF47B03C
+#define THICKNESS 10
 #define FPS 30
 
 static inline void rotateY(float x, float y, float z, float angle_rad,
@@ -29,7 +34,6 @@ static inline void rotateY(float x, float y, float z, float angle_rad,
   x_out = x * c - z * s;
   y_out = y; // y_out keep static
   z_out = x * s + z * c; // NOTE: uses z here (not y)
-
 }
 
 void square(SDL_Renderer *render,
@@ -192,8 +196,8 @@ void square(SDL_Renderer *render,
       point8_sq.y = (int)((point8_sq.y - cy) / denom + cy);
     }
 
-    /* Parameters to draw a lines between points
-     * Fron face*/
+    /* Parameters to draw a lines between points*/
+    /* Fron face*/
     int point1_connectionx = point1_sq.x + point1_sq.w/2;
     int point1_connectiony = point1_sq.y + point1_sq.h/2;
     int point2_connectionx = point2_sq.x + point2_sq.w/2;
@@ -211,9 +215,12 @@ void square(SDL_Renderer *render,
     int point7_connectiony = point7_sq.y + point7_sq.h/2;
     int point8_connectionx = point8_sq.x + point8_sq.w/2;
     int point8_connectiony = point8_sq.y + point8_sq.h/2;
-    /* Drawing the points */
+
+    /* Drawing the frame (order is important) */
+
     SDL_SetRenderDrawColor(render, GRAY);
     SDL_RenderClear(render);
+
     SDL_SetRenderDrawColor(render, 255, 255, 255, 255); // Points color
     SDL_RenderFillRect(render, &point1_sq);
     SDL_RenderFillRect(render, &point2_sq);
@@ -223,37 +230,48 @@ void square(SDL_Renderer *render,
     SDL_RenderFillRect(render, &point6_sq);
     SDL_RenderFillRect(render, &point7_sq);
     SDL_RenderFillRect(render, &point8_sq);
+
     /*Drawing lines */
     /*Conections in the front face*/
-    SDL_RenderDrawLine(render, point1_connectionx, point1_connectiony, 
-                               point2_connectionx, point2_connectiony); // Drawing the line between the point 1 and point 2
-    SDL_RenderDrawLine(render, point1_connectionx, point1_connectiony,
-                               point3_connectionx, point3_connectiony); // Line between point 1 and point point 3
-    SDL_RenderDrawLine(render, point3_connectionx, point3_connectiony, 
-                               point4_connectionx, point4_connectiony); // Line between point 3 and point 4
-    SDL_RenderDrawLine(render, point4_connectionx, point4_connectiony,
-                               point2_connectionx, point2_connectiony); // Line between point 4 and point 2
+    thickLineColor(render, point1_connectionx, point1_connectiony, 
+                           point2_connectionx, point2_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 1 and point 2 
+    thickLineColor(render, point1_connectionx, point1_connectiony, 
+                           point3_connectionx, point3_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 1 and point 3 
+    thickLineColor(render, point3_connectionx, point3_connectiony, 
+                           point4_connectionx, point4_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 3 and point 4 
+    thickLineColor(render, point4_connectionx, point4_connectiony, 
+                           point2_connectionx, point2_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 4 and point 2
     /*Connections in the back face*/
-    SDL_RenderDrawLine(render, point5_connectionx, point5_connectiony,
-                               point6_connectionx, point6_connectiony); // Line between point 6 and point 6
-    SDL_RenderDrawLine(render, point5_connectionx, point5_connectiony,
-                               point7_connectionx, point7_connectiony); // Line between point 5 and point 7
-    SDL_RenderDrawLine(render, point7_connectionx, point7_connectiony,
-                               point8_connectionx, point8_connectiony); // Line between point 7 and point 8
-    SDL_RenderDrawLine(render, point8_connectionx, point8_connectiony, 
-                               point6_connectionx, point6_connectiony); // Line between point 8 and point 6
+    thickLineColor(render, point5_connectionx, point5_connectiony, 
+                           point6_connectionx, point6_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 5 and point 6
+     thickLineColor(render, point5_connectionx, point5_connectiony, 
+                           point7_connectionx, point7_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 5 and point 7                                             
+     thickLineColor(render, point7_connectionx, point7_connectiony, 
+                           point8_connectionx, point8_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 7 and point 8
+     thickLineColor(render, point8_connectionx, point8_connectiony, 
+                           point6_connectionx, point6_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 8 and point 6
     /*Conections between faces*/
-    SDL_RenderDrawLine(render, point1_connectionx, point1_connectiony,
-                               point5_connectionx, point5_connectiony); // Line between point 1 and point 5
-    SDL_RenderDrawLine(render, point2_connectionx, point2_connectiony, 
-                               point6_connectionx, point6_connectiony); // Line between point 2 and point 6
-    SDL_RenderDrawLine(render, point3_connectionx, point3_connectiony, 
-                               point7_connectionx, point7_connectiony); // Line between point 3 and point 7
-    SDL_RenderDrawLine(render, point4_connectionx, point4_connectiony,
-                               point8_connectionx, point8_connectiony); // Line between point 4 and point 8
+     thickLineColor(render, point1_connectionx, point1_connectiony, 
+                           point5_connectionx, point5_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 1 and point 5
+     thickLineColor(render, point2_connectionx, point2_connectiony, 
+                           point6_connectionx, point6_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 2 and point 6
+     thickLineColor(render, point3_connectionx, point3_connectiony, 
+                           point7_connectionx, point7_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 3 and point 7
+     thickLineColor(render, point4_connectionx, point4_connectiony, 
+                           point8_connectionx, point8_connectiony, 
+                           THICKNESS, GREEN); // Drawing the line between point 4 and point 8
     SDL_RenderPresent(render);
-
-
     SDL_Delay(1000/FPS);
   }
 }
