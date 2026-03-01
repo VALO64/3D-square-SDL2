@@ -20,7 +20,7 @@
 #define WITHE 0xFFFFFFFF //ARGB
 #define GREEN 0xFF47B03C
 #define THICKNESS 10
-#define FPS 30
+#define FPS 60
 
 static inline void rotateY(float x, float y, float z, float angle_rad,
                            float &x_out, float &y_out, float &z_out) {
@@ -221,7 +221,7 @@ void square(SDL_Renderer *render,
     SDL_SetRenderDrawColor(render, GRAY);
     SDL_RenderClear(render);
 
-    SDL_SetRenderDrawColor(render, 255, 255, 255, 255); // Points color
+    //SDL_SetRenderDrawColor(render, 255, 255, 255, 255); // Points color
     SDL_RenderFillRect(render, &point1_sq);
     SDL_RenderFillRect(render, &point2_sq);
     SDL_RenderFillRect(render, &point3_sq);
