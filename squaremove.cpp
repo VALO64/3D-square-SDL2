@@ -24,6 +24,9 @@
 #define THICKNESS 10
 #define FPS 60
 const Uint8 *keyState = SDL_GetKeyboardState(NULL);
+/* Screen center for perspective scaling around the center */
+float cx = WIDTH * 0.5f;
+float cy = HEIGHT * 0.5f;
 
 static inline void rotateY(float x, float y, float z, float angle_rad,
                            float &x_out, float &y_out, float &z_out) {
@@ -38,9 +41,14 @@ static inline void rotateY(float x, float y, float z, float angle_rad,
   y_out = y; // y_out keep static
   z_out = x * s + z * c; // NOTE: uses z here (not y)
   if(keyState[SDL_SCANCODE_W]||keyState[SDL_SCANCODE_S]){
+  x_out = x;
+  y_out = y * c - z * s;   
+  z_out = y * s + z * c;
+  }
+  if(keyState[SDL_SCANCODE_Q]||keyState[SDL_SCANCODE_E]){
   x_out = x * c - y * s;
   y_out = x * s + y * c;   
-  z_out = z; 
+  z_out = z;
   }
 }
 
@@ -59,9 +67,8 @@ void square(SDL_Renderer *render,
             bool *quit)
 {
   float offset = 10; //Offset to senter the square in the middle the square is 20x20 pixels
-  // Screen center for perspective scaling around the center
-  const float cx = WIDTH * 0.5f;
-  const float cy = HEIGHT * 0.5f;
+
+
 
   const float cam_dist = 2.5f;  // Camera distance along increse the number to see the cube far
   const int pt_size = 15; // Point size in pixels
@@ -317,25 +324,17 @@ int main(){
       }
     }
     if (quit) break;
-    
-
     /* Square movement with keyboard keys */
-    if(keyState[SDL_SCANCODE_D]){
-      angle0++;
-      std::cout <<"I pressed the D key!" << std::endl;
-    }
-    if(keyState[SDL_SCANCODE_A]){
-      angle0--;
-      std::cout <<"I pressed the A key!" << std::endl;
-    }
-    if(keyState[SDL_SCANCODE_W]){
-      angle0++;
-      std::cout <<"I pressed the W key!" << std::endl;
-    }
-    if(keyState[SDL_SCANCODE_S]){
-      angle0--;
-      std::cout <<"I pressed the S key!" << std::endl;
-    }
+    if(keyState[SDL_SCANCODE_D]) angle0++;
+    if(keyState[SDL_SCANCODE_A]) angle0--;
+    if(keyState[SDL_SCANCODE_W]) angle0++;
+    if(keyState[SDL_SCANCODE_S]) angle0--;
+    if(keyState[SDL_SCANCODE_Q]) angle0++;
+    if(keyState[SDL_SCANCODE_E]) angle0--;
+    if(keyState[SDL_SCANCODE_J]) cx--;
+    if(keyState[SDL_SCANCODE_L]) cx++;  
+    if(keyState[SDL_SCANCODE_I]) cy--;
+    if(keyState[SDL_SCANCODE_K]) cy++;
     square(render,
            /* front face */  p1x , p1y,
                              p2x , p2y,
